@@ -1,20 +1,25 @@
 ﻿using quiz_app_example.Model;
+using quiz_app_example.Utils;
 
 namespace quiz_app_example.Resources
 {
    public interface QuestionStore
     {
-        Task InsertQuestion(Question question);
+        Task<Response> AddQuestion(Question question);
+
         Task<List<Question>> GetAllQuestion();
 
         Task<Response> DeleteQuestion(String id);
+
         Task<Response> UpdateQuestion(Question question);
 
     }
 
     public class QuestionStoreImpl : QuestionStore
     {
-        private readonly string STORE_PATH_FILE = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory + @"..\..\..\", "questions_storage.json");
+        private readonly string STORE_PATH_FILE = OperationSystemHelper.ISOSXSystem() ?
+            System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory + "questions_storage.json") :
+            System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory + @"..\..\..\", "questions_storage.json");
 
         private readonly FileJsonHandler _fileJsonHandler;
         public QuestionStoreImpl(FileJsonHandler fileJsonHandler)
@@ -27,12 +32,20 @@ namespace quiz_app_example.Resources
             return await _fileJsonHandler.readFile<List<Question>>(STORE_PATH_FILE);
         }
 
-        public async Task InsertQuestion(Question question)
+        public async Task<Response> AddQuestion(Question question)
         {
             List<Question> questions = new List<Question>();
-            questions =  await _fileJsonHandler.readFile<List<Question>>(STORE_PATH_FILE);
-            questions.Add(question);
-            await _fileJsonHandler.wirteFile(STORE_PATH_FILE, questions);
+            questions = await _fileJsonHandler.readFile<List<Question>>(STORE_PATH_FILE);
+            if (questions.ConvertAll(question => new String(question.Text)).Contains(question.Text))
+            {
+                return new Response(500, "Can not add duplicated question");
+            }
+            else
+            {
+                questions.Add(question);
+                await _fileJsonHandler.wirteFile(STORE_PATH_FILE, questions);
+                return new Response(200, "Insert new question");
+            }    
         }
 
         public async Task<Response> DeleteQuestion(String id)
@@ -67,8 +80,12 @@ namespace quiz_app_example.Resources
                     await _fileJsonHandler.wirteFile(STORE_PATH_FILE, questions);
                     return new Response(200, "Question updated");
                 }
-            } 
-            InsertQuestion(question);
+            }
+            var addQuestionResult = AddQuestion(question);
+            if (addQuestionResult.Result.StatusCode !=  200)
+            {
+                return await addQuestionResult;
+            }
             return new Response(200, "Insert new question");
         }
     } 

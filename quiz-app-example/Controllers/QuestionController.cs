@@ -37,6 +37,12 @@ namespace quiz_app_example.Controllers
         {
             return await _questionProcessing.UpdateQuestion(question);
         }
+
+        [HttpPost(Name = "AddAQuestion")]
+        public async Task<ActionResult<Response>> AddQuestion(Question question)
+        {
+            return await _questionProcessing.AddQuestion(question);
+        }
     }
 
 }

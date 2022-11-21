@@ -10,7 +10,7 @@ namespace quiz_app_example.Processing
 
         void SubmitAnswer(int idQUestion, int correctAnswerIndex);
 
-        Task StoreQUestion(Question question);
+        Task<Response> AddQuestion(Question question);
 
         Task<Response> DeleteQuestion(String id);
 
@@ -31,9 +31,9 @@ namespace quiz_app_example.Processing
             return await _questionStore.GetAllQuestion();
         }
 
-        public async Task StoreQUestion(Question question)
+        public async Task<Response> AddQuestion(Question question)
         {
-            await _questionStore.InsertQuestion(question);
+            return await _questionStore.AddQuestion(question);
         }
 
         public void SubmitAnswer(int idQUestion, int correctAnswerIndex)
