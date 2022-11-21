@@ -8,6 +8,7 @@ namespace quiz_app_example.Resources
         Task<List<Question>> GetAllQuestion();
 
         Task<Response> DeleteQuestion(String id);
+        Task<Response> UpdateQuestion(Question question);
 
     }
 
@@ -51,5 +52,24 @@ namespace quiz_app_example.Resources
             }
 
         }
-    }
+
+        public async Task<Response> UpdateQuestion(Question question)
+        {
+            List<Question> questions = new List<Question>();
+            questions = await _fileJsonHandler.readFile<List<Question>>(STORE_PATH_FILE);
+            bool existedQuestion = questions.Any(question => question.Id.Equals(question.Id) && question.Text.Equals(question.Text));
+            if (existedQuestion)
+            {
+                var index = questions.FindIndex(question => question.Id.Equals(question.Id) || question.Text.Equals(question.Text));
+                if (index != -1)
+                {
+                    questions[index] = question;
+                    await _fileJsonHandler.wirteFile(STORE_PATH_FILE, questions);
+                    return new Response(200, "Question updated");
+                }
+            } 
+            InsertQuestion(question);
+            return new Response(200, "Insert new question");
+        }
+    } 
 }

@@ -13,6 +13,8 @@ namespace quiz_app_example.Processing
         Task StoreQUestion(Question question);
 
         Task<Response> DeleteQuestion(String id);
+
+        Task<Response> UpdateQuestion(Question question);
     }
 
     public class QuestionProcessingImpl : QuestionProcessing
@@ -43,6 +45,11 @@ namespace quiz_app_example.Processing
         public async Task<Response> DeleteQuestion(String id)
         {
             return await _questionStore.DeleteQuestion(id);
+        }
+
+        public async Task<Response> UpdateQuestion(Question question)
+        {
+            return await _questionStore.UpdateQuestion(question);
         }
     }
 }

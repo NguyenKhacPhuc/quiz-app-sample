@@ -32,6 +32,11 @@ namespace quiz_app_example.Controllers
             return await _questionProcessing.DeleteQuestion(id);
         }
 
+        [HttpPut(Name = "UpdateAQuestion")]
+        public async Task<ActionResult<Response>> UpdateQuestion(Question question)
+        {
+            return await _questionProcessing.UpdateQuestion(question);
+        }
     }
 
 }
