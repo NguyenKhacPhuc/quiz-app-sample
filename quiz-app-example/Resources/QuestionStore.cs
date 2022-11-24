@@ -21,6 +21,14 @@ namespace quiz_app_example.Resources
             System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory + "questions_storage.json") :
             System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory + @"..\..\..\", "questions_storage.json");
 
+        private readonly string ATTEMPT_STORE_PATH_FILE = OperationSystemHelper.ISOSXSystem() ?
+            System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory + "attempt_storage.json") :
+            System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory + @"..\..\..\", "attempt_storage.json");
+
+        private Attempt attempt = new Attempt();
+
+        List<Question> question = new List<Question>();
+
         private readonly FileJsonHandler _fileJsonHandler;
         public QuestionStoreImpl(FileJsonHandler fileJsonHandler)
         {
@@ -29,7 +37,14 @@ namespace quiz_app_example.Resources
 
         public async Task<List<Question>> GetAllQuestion()
         {
-            return await _fileJsonHandler.readFile<List<Question>>(STORE_PATH_FILE);
+            attempt = await _fileJsonHandler.readFile<Attempt>(ATTEMPT_STORE_PATH_FILE);
+            Console.WriteLine("quyenn " + System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory));
+            var questions = attempt.questions;
+            for (int i = 0; i < questions.Length; i++)
+            {
+                question.Add(questions[i]);
+            }
+            return question;
         }
 
         public async Task<Response> AddQuestion(Question question)

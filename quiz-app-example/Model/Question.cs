@@ -10,9 +10,9 @@
 
         public int CorrectAnswerIndex { get; set; }
 
-        public Question(string text, string[] answers, int correctAnswerIndex)
+        public Question(string id, string text, string[] answers, int correctAnswerIndex)
         {
-            Id = RandomIdByLength(18);
+            Id = id;
             Text = text;
             Answers = answers;
             CorrectAnswerIndex = correctAnswerIndex;
