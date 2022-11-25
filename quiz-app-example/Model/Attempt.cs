@@ -2,10 +2,21 @@
 {
     public class Attempt
     {
-        public string Id { get; set; }
-        public Question[] Questions { get; set; }
+        public Attempt()
+        {
+        }
 
-        public string StartedTime { get; set; }
+        public Attempt(string id, Question[] questions, string startedTime)
+        {
+            id = id;
+            questions = questions;
+            startedTime = startedTime;
+        }
+
+        public string id { get; set; }
+        public Question[] questions { get; set; }
+
+        public string startedTime { get; set; }
 
     }
 }
